@@ -8,11 +8,14 @@
 #ifndef __BITFIELD_H__
 #define __BITFIELD_H__
 
+
 #include <iostream>
 
 using namespace std;
 
-typedef unsigned int TELEM;
+
+typedef unsigned int TELEM;     //  ОРИГИНАЛ
+
 
 class TBitField
 {
@@ -45,6 +48,23 @@ public:
 
   friend istream &operator>>(istream &istr, TBitField &bf);       //      (#О7)
   friend ostream &operator<<(ostream &ostr, const TBitField &bf); //      (#П4)
+
+
+  const int bit_width(const int bel)       // я побоялся подключать библиотеку с bit_width
+  {
+	  for (int i = 0; i < bel; i++)
+	  {
+		  if (pow(2, i) > bel)
+		  {
+			  return i;  
+		  }
+	  }
+  }
+
+  const int bitsInElem = numeric_limits<TELEM>::digits;
+  const int shiftSize =  bit_width(bitsInElem - 1);  //=5
+
+
 };
 // Структура хранения битового поля
 //   бит.поле - набор битов с номерами от 0 до BitLen

@@ -71,7 +71,13 @@ void TBitField::ClrBit(const int n) // очистить бит
 int TBitField::GetBit(const int n) const // получить значение бита
 {
 	if (n < BitLen && n >= 0)
-		return pMem[GetMemIndex(n)] & GetMemMask(n);
+	{
+		TELEM gb = pMem[GetMemIndex(n)] & GetMemMask(n);
+		if (gb==0)  
+			return 0;
+		else return 1;
+	}
+		
 	else throw exception("bit position is out of range");
 }
 
@@ -166,7 +172,6 @@ TBitField TBitField::operator~(void) // отрицание
 istream &operator>>(istream &istr, TBitField &bf) // ввод
 {
 	size_t i;
-	cout << "BitField creation" << endl;
 	istr >> i;
 	bf.SetBit(i);
 	return istr;

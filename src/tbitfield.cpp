@@ -15,7 +15,10 @@ TBitField::TBitField(int len)
 		throw exception("len must exist");
 
 	BitLen = len;
-	MemLen = BitLen / (sizeof(TELEM) * 8) + 1;
+	if (BitLen % (sizeof(TELEM) * 8) == 0)
+		MemLen = BitLen / (sizeof(TELEM) * 8);
+	else
+		MemLen = BitLen / (sizeof(TELEM) * 8) + 1;
 	pMem = new TELEM[MemLen];
 	memset(pMem, 0, MemLen * sizeof(TELEM));
 }
@@ -40,7 +43,7 @@ int TBitField::GetMemIndex(const int n) const // индекс Мем для би
 
 TELEM TBitField::GetMemMask(const int n) const  // битовая маска для бита n
 {
-	return 1 << (n & (sizeof(TELEM) * 8) - 1);
+	return 1 << (n & (sizeof(TELEM) * 8 - 1));
 }
 
 
@@ -171,21 +174,21 @@ TBitField TBitField::operator~(void) // отрицание
 
 istream &operator>>(istream &istr, TBitField &bf) // ввод
 {
-	size_t i;
-	istr >> i;
-	bf.SetBit(i);
+	int my_set;
+	for (size_t i = 0; i < bf.GetLength(); i++)
+	{
+		istr >> my_set;
+		if(my_set==1)
+			bf.SetBit(i);	
+	}
 	return istr;
 }
 
 ostream &operator<<(ostream &ostr, const TBitField &bf) // вывод
 {
-	const int len=bf.GetLength();
-	for (size_t i = 0; i < len; i++)
+	for (size_t i = 0; i < bf.GetLength(); i++)
 	{
-		if (bf.GetBit(i))
-			ostr << '1';
-		else
-			ostr << '0';
+		ostr << bf.GetBit(i);		 
 	}
 	return ostr;
 }
